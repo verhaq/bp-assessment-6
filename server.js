@@ -3,12 +3,25 @@ const cors = require('cors')
 const app = express()
 const {bots, playerRecord} = require('./data')
 const {shuffleArray} = require('./utils')
+require('dotenv').config()
+const {ROLLBAR_TOKEN}=process.env
 
-app.use(express.static('public'))
 
 
 app.use(express.json())
 app.use(cors())
+
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken:ROLLBAR_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+rollbar.log('Hello world!')
+app.use(express.static(`${__dirname}/public`))
+
+
 
 app.get('/api/robots', (req, res) => {
     try {
